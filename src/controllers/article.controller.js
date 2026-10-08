@@ -1,3 +1,5 @@
+//que hacer con cada pedido para eso sirve controllers.
+
 import { matchedData } from "express-validator";
 import { ArticleModel } from "../models/article.model.js";
 import { UserModel } from "../models/user.model.js";
@@ -6,14 +8,14 @@ import { TagModel } from "../models/tag.model.js";
 // crea un articulo perteneciente al usuario autenticado
 export const createArticle = async (req, res) => {
   try {
-    const data = matchedData(req); // obtiene solamente los campos que pasaron las validaciones
+    const data = matchedData(req); // obtiene solamente los campos que pasaron las validaciones con matchedData
 
-    const article = await ArticleModel.create({
+    const article = await ArticleModel.create({ //funcion que viene de sequelize que vamos a crear algo.
       ...data,
       user_id: req.user.id, // el autor sale del usuario autenticado, no del body
     });
 
-    return res.status(201).json({
+    return res.status(201).json({ //201 created despues de un post exitoso:)
       message: "Articulo creado correctamente",
       article,
     });
@@ -30,7 +32,7 @@ export const createArticle = async (req, res) => {
 export const getArticles = async (req, res) => {
   try {
     const articles = await ArticleModel.findAll({
-      include: [
+      include: [ //eager loading permite traer datos relacionados //solo lo necesario, no exponer de mas
         {
           model: UserModel,
           as: "author",
@@ -45,7 +47,7 @@ export const getArticles = async (req, res) => {
       ],
     }); // incluye el autor y las etiquetas relacionadas con cada articulo
 
-    return res.status(200).json(articles);
+    return res.status(200).json(articles); //200 salio bien, consultas y actualizaciones.
   } catch (error) {
     console.error(error);
 
@@ -93,7 +95,7 @@ export const getArticleById = async (req, res) => {
 // obtiene solamente los articulos del usuario autenticado
 export const getMyArticles = async (req, res) => {
   try {
-    const articles = await ArticleModel.findAll({
+    const articles = await ArticleModel.findAll({ //vamos a buscar algo, una funcion que viene de sequelize.
       where: {
         user_id: req.user.id,
       },
@@ -121,8 +123,7 @@ export const getArticlesByUser = async (req, res) => {
     const user = await UserModel.findByPk(req.params.id);
 
     if (!user) {
-      return res.status(404).json({
-        message: "Usuario no encontrado",
+      return res.status(404).json({ //404 no existe, intentamos borrar o editar algo que no existe        message: "Usuario no encontrado",
       });
     }
 
@@ -142,7 +143,7 @@ export const getArticlesByUser = async (req, res) => {
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
+    return res.status(500).json({ //500 fallo del servidor
       message: "Error interno del servidor",
     });
   }
@@ -158,12 +159,12 @@ export const updateArticle = async (req, res) => {
 }); // solo permitimos actualizar los campos validados que llegaron en el body
 
     if (Object.keys(data).length === 0) {
-      return res.status(400).json({
+      return res.status(400).json({ //400 el cliente mando datos incorrectos, falta una validacion
         message: "Debes enviar al menos un campo para actualizar",
       });
     }
 
-    await req.article.update(data); // ownerMiddleware ya comprobo que el usuario puede modificarlo
+    await req.article.update(data); // ownerMiddleware ya comprobo que el usuario puede modificarlo //modificar: update 
 
     return res.status(200).json({
       message: "Articulo actualizado correctamente",
@@ -181,7 +182,7 @@ export const updateArticle = async (req, res) => {
 // elimina logicamente un articulo
 export const deleteArticle = async (req, res) => {
   try {
-    await req.article.destroy(); // Article tiene paranoid:true, por eso no se elimina fisicamente
+    await req.article.destroy(); // Article tiene paranoid:true, por eso no se elimina fisicamente //destroy elimina
 
     return res.status(200).json({
       message: "Articulo eliminado correctamente",

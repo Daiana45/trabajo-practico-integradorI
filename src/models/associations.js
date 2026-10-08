@@ -1,3 +1,5 @@
+//creamos association que importa los modelos y define las relaciones entre ellos.
+
 import { UserModel } from "./user.model.js";
 import { ProfileModel } from "./profile.model.js";
 import { ArticleModel } from "./article.model.js";
@@ -27,8 +29,7 @@ ArticleModel.belongsTo(UserModel, {
   as: "author", // permite incluir al autor usando el alias author
 });
 
-// relacion N:M: un articulo puede tener muchas etiquetas
-// y una misma etiqueta puede estar asociada a muchos articulos
+// relacion N:M: un articulo puede tener muchas etiquetas y una misma etiqueta puede estar asociada a muchos articulos //
 ArticleModel.belongsToMany(TagModel, {
   through: ArticleTagModel, // indica que la relacion se guarda en la tabla intermedia
   foreignKey: "article_id", // columna que identifica al articulo en la tabla intermedia

@@ -1,3 +1,5 @@
+//utilidades sueltas (JWT, bycript)
+
 import bcrypt from "bcrypt";
 
 // recibe una contraseña normal y devuelve una versión encriptada que podemos guardar en la base de datos

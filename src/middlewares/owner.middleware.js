@@ -1,3 +1,5 @@
+//Verifica que seas el dueño del recurso (por ejemplo, el autor del artículo)
+
 import { ArticleModel } from "../models/article.model.js";
 
 export const ownerMiddleware = async (req, res, next) => {

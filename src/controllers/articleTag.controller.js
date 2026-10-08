@@ -10,7 +10,7 @@ export const createArticleTag = async (req, res) => {
     const { article_id, tag_id } = matchedData(req);
 
     // buscamos el articulo que queremos relacionar con la etiqueta
-    const article = await ArticleModel.findByPk(article_id);
+    const article = await ArticleModel.findByPk(article_id); //una funcion que viene de sequelize que dice que vamos a buscar un id
 
     // si el articulo no existe, no podemos crear la relacion
     if (!article) {
@@ -32,7 +32,7 @@ export const createArticleTag = async (req, res) => {
     // comprobamos que el usuario autenticado sea el autor del articulo
     // esta operacion solo puede realizarla el propietario del articulo
     if (article.user_id !== req.user.id) {
-      return res.status(403).json({
+      return res.status(403).json({ //403 no podes acceder
         message: "Solo el autor puede asignar etiquetas a este articulo",
       });
     }

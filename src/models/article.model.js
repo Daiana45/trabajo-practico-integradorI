@@ -41,7 +41,7 @@ export const ArticleModel = sequelize.define(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, //le agrega createdAT y updatedAt
     paranoid: true,
     underscored: true,
   }

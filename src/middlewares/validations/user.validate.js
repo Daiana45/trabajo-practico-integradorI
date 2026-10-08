@@ -13,8 +13,8 @@ export const registerValidation = [
     .withMessage("El username solo puede contener letras y numeros"),
 
   // el email debe tener formato correcto
-  body("email")
-    .trim()
+  body("email") //Las validaciones son middlewares: body('email') mira el campo del cuerpo, y param('id') mira lo que viene en la URL.
+    .trim() //Se encadenan reglas: notEmpty() , isEmail() , isLength() , puede llevar su mensaje con withMessage() . isInt() . Cada una
     .notEmpty()
     .withMessage("El email no debe estar vacio")
     .isEmail()

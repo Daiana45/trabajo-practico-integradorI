@@ -1,3 +1,5 @@
+//Verifica el JWT de la cookie. Sin sesión válida: 401
+
 import { verifyToken } from "../helpers/jwt.helper.js";
 import { UserModel } from "../models/user.model.js";
 

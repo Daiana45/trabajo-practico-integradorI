@@ -14,7 +14,7 @@ export const createArticleValidation = [
     .withMessage("El contenido debe tener como minimo 50 caracteres"),
 
   body("excerpt")
-    .optional()
+    .optional() //puede venir o no
     .isLength({ max: 500 })
     .withMessage("El excerpt no puede superar los 500 caracteres"),
 
@@ -25,7 +25,15 @@ export const createArticleValidation = [
 ];
 
 export const updateArticleValidation = [
-  param("id")
+//se puede validar que exista algo en la base de datos usando .custom(async (id) => {
+    //const usuario = await buscarUsuario(id);
+    //if (!usuario) {
+        //throw new Error("El usuario no existe");
+    //}
+    //return true;
+//})
+
+  param("id") //en los id se puede validar que sean entero positivos y que existan en la base de datos.
     .isInt()
     .withMessage("El id debe ser un numero entero"),
 

@@ -1,5 +1,8 @@
 import { Router } from "express";
 
+
+//qu url lleva a que controlado para eso sirven las rutas
+
 import {
   createArticle,
   getArticles,
@@ -22,6 +25,8 @@ import {
 import { idValidation } from "../middlewares/validations/user.validate.js";
 
 export const articleRouter = Router();
+
+//post:crear, get: leer, put:actualizar y delete: eliminar :)
 
 // cualquier usuario autenticado puede crear un articulo
 articleRouter.post(

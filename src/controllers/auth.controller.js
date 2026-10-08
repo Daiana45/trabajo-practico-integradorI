@@ -73,7 +73,7 @@ export const login = async (req, res) => {
     }); // busca el usuario por username
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(401).json({ //401, quien sos?
         message: "Credenciales incorrectas",
       }); // no indicamos si fallo el usuario o la contraseña por seguridad
     }
@@ -88,7 +88,7 @@ export const login = async (req, res) => {
         message: "Credenciales incorrectas",
       });
     }
-
+//la cookie, despues en el auth controllers y en otros controllers.
     const token = generateToken({
       idUser: user.id,
     }); // genera un jwt guardando el id del usuario para poder identificarlo después
