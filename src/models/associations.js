@@ -6,9 +6,9 @@ import { ArticleTagModel } from "./articleTag.model.js";
 
 // relacion 1:1 entre usuario y perfil
 UserModel.hasOne(ProfileModel, {
-  foreignKey: "user_id",
-  as: "profile",
-  onDelete: "CASCADE",
+  foreignKey: "user_id", // indica qué columna de Profile relaciona al usuario
+  as: "profile", // alias que vamos a usar cuando hagamos include
+  onDelete: "CASCADE", // si se elimina físicamente el usuario, elimina también su perfil
 });
 
 ProfileModel.belongsTo(UserModel, {
@@ -29,10 +29,10 @@ ArticleModel.belongsTo(UserModel, {
 
 // relacion N:M entre articulos y etiquetas
 ArticleModel.belongsToMany(TagModel, {
-  through: ArticleTagModel,
-  foreignKey: "article_id",
-  otherKey: "tag_id",
-  as: "tags",
+  through: ArticleTagModel, // indica que la relacion n:m pasa por la tabla intermedia
+  foreignKey: "article_id", // fk de Article dentro de ArticleTag
+  otherKey: "tag_id", // fk de Tag dentro de ArticleTag
+  as: "tags", // nombre que usaremos para acceder a las etiquetas
 });
 
 TagModel.belongsToMany(ArticleModel, {
