@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { startDB } from "./src/config/database.js";
 import "./src/models/associations.js"; // importa las relaciones para que sequelize las conozca antes de sincronizar
 import { userRouter } from "./src/routes/user.routes.js";
+import { tagRouter } from "./src/routes/tag.routes.js";
 
 import { authRouter } from "./src/routes/auth.routes.js";
 
@@ -28,6 +29,8 @@ app.use(cookieParser()); // permite leer las cookies desde req.cookies
 app.use("/api/auth", authRouter); // todas las rutas de auth empiezan con /api/auth
 
 app.use("/api/users", userRouter); // todas las rutas de usuarios empiezan con /api/users
+
+app.use("/api/tags", tagRouter); // todas las rutas de etiquetas empiezan con /api/tags
 
 app.listen(PORT, async () => {
   await startDB(); // primero comprueba la conexion y sincroniza las tablas
