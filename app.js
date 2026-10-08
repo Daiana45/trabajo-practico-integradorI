@@ -1,38 +1,58 @@
-import "dotenv/config"; // carga las variables que tenemos guardadas en el archivo .env
+import "dotenv/config"; // carga las variables de entorno definidas en el archivo .env
 
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import { startDB } from "./src/config/database.js";
-import "./src/models/associations.js"; // importa las relaciones para que sequelize las conozca antes de sincronizar
+
+// importa las relaciones para que sequelize las conozca antes de sincronizar las tablas
+import "./src/models/associations.js";
+
+// importa los routers que agrupan las rutas de cada funcionalidad
+import { authRouter } from "./src/routes/auth.routes.js";
 import { userRouter } from "./src/routes/user.routes.js";
 import { tagRouter } from "./src/routes/tag.routes.js";
+import { articleRouter } from "./src/routes/article.routes.js";
+import { articleTagRouter } from "./src/routes/articleTag.routes.js";
 
-import { authRouter } from "./src/routes/auth.routes.js";
-
+// crea la aplicacion de express
 const app = express();
 
-const PORT = process.env.PORT || 3005; // usa el puerto del .env y si no existe utiliza 3005 como alternativa
+// obtiene el puerto del archivo .env; si no existe, utiliza el puerto 3005
+const PORT = process.env.PORT || 3005;
 
+// configura cors para permitir peticiones desde el frontend
 app.use(
   cors({
-    origin: "http://localhost:5173", // permite peticiones desde nuestro frontend
-    credentials: true, // permite enviar y recibir cookies desde el frontend
+    origin: "http://localhost:5173", // direccion habitual del servidor de desarrollo de vite
+    credentials: true, // permite que el navegador envie y reciba cookies
   })
 );
 
-app.use(express.json()); // permite que express pueda recibir informacion en formato json
+// permite recibir y procesar datos enviados en formato json
+app.use(express.json());
 
-app.use(cookieParser()); // permite leer las cookies desde req.cookies
+// permite acceder a las cookies recibidas mediante req.cookies
+app.use(cookieParser());
 
-app.use("/api/auth", authRouter); // todas las rutas de auth empiezan con /api/auth
+// registra las rutas de autenticacion y perfiles
+app.use("/api/auth", authRouter);
 
-app.use("/api/users", userRouter); // todas las rutas de usuarios empiezan con /api/users
+// registra las rutas de administracion de usuarios
+app.use("/api/users", userRouter);
 
-app.use("/api/tags", tagRouter); // todas las rutas de etiquetas empiezan con /api/tags
+// registra las rutas para consultar y administrar etiquetas
+app.use("/api/tags", tagRouter);
 
+// registra las rutas para crear, consultar, modificar y eliminar articulos
+app.use("/api/articles", articleRouter);
+
+// registra las rutas para asignar y quitar etiquetas de los articulos
+app.use("/api/articles-tags", articleTagRouter);
+
+// inicia el servidor y comprueba la conexion con la base de datos
 app.listen(PORT, async () => {
-  await startDB(); // primero comprueba la conexion y sincroniza las tablas
+  await startDB(); // intenta conectarse a mysql y sincronizar los modelos
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
