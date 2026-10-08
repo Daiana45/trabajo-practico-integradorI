@@ -9,28 +9,54 @@ import {
 } from "../controllers/auth.controller.js";
 
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-import { profileValidation } from "../middlewares/validations/profile.validate.js";
 import { validate } from "../middlewares/validate.js";
+
+import {
+  registerValidation,
+  loginValidation,
+} from "../middlewares/validations/user.validate.js";
+
+import {
+  updateProfileValidation,
+} from "../middlewares/validations/profile.validate.js";
 
 export const authRouter = Router();
 
-// registro publico, no necesita estar autenticado
-authRouter.post("/register", register);
+// registro publico: cualquier persona puede crear su propia cuenta
+authRouter.post(
+  "/register",
+  registerValidation, // valida username, email, password, nombre y apellido
+  validate, // devuelve los errores si los datos no cumplen las reglas
+  register // crea el usuario y su perfil
+);
 
-// login publico, el usuario todavia no tiene cookie de autenticacion
-authRouter.post("/login", login);
+// inicio de sesion publico: todavia no requiere una cookie valida
+authRouter.post(
+  "/login",
+  loginValidation, // comprueba que se hayan enviado username y password
+  validate,
+  login // compara la contraseña y genera la cookie con el jwt
+);
 
-// desde aca necesitamos que el usuario tenga un jwt valido
-authRouter.get("/profile", authMiddleware, getProfile);
+// devuelve los datos de la cuenta que corresponde a la sesion actual
+authRouter.get(
+  "/profile",
+  authMiddleware, // verifica la cookie y carga al usuario en req.user
+  getProfile
+);
 
-// solamente puede modificar su propio perfil porque usamos req.user.id
+// permite modificar el perfil del usuario autenticado, no el de otra persona
 authRouter.put(
   "/profile",
   authMiddleware,
-  profileValidation,
+  updateProfileValidation, // permite enviar solamente los campos que queremos cambiar
   validate,
   updateProfile
 );
 
-// para cerrar sesion necesitamos que el usuario este autenticado
-authRouter.post("/logout", authMiddleware, logout);
+// cierra la sesion eliminando la cookie de autenticacion
+authRouter.post(
+  "/logout",
+  authMiddleware,
+  logout
+);

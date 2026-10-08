@@ -131,7 +131,11 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    const data = matchedData(req); // obtiene solamente los campos validados
+    //const data = matchedData(req); // obtiene solamente los campos validados
+
+    const data = matchedData(req, {
+  locations: ["body"],
+}); // obtenemos solo los campos del body y evitamos incluir el id de la url
 
     if (data.password) {
       data.password = await hashPassword(data.password); // si cambia la contraseña, tambien debemos volver a generar el hash

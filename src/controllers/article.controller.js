@@ -151,7 +151,11 @@ export const getArticlesByUser = async (req, res) => {
 // modifica un articulo
 export const updateArticle = async (req, res) => {
   try {
-    const data = matchedData(req); // obtiene solamente los campos validados
+   // const data = matchedData(req); // obtiene solamente los campos validados
+
+   const data = matchedData(req, {
+  locations: ["body"],
+}); // solo permitimos actualizar los campos validados que llegaron en el body
 
     if (Object.keys(data).length === 0) {
       return res.status(400).json({

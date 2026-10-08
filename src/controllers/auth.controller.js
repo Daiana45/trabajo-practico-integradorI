@@ -147,40 +147,59 @@ export const getProfile = async (req, res) => {
 // modifica los datos del perfil del usuario autenticado
 export const updateProfile = async (req, res) => {
   try {
-    const validatedData = matchedData(req); // obtiene solamente los datos que fueron validados
+    // obtiene solamente los campos del body que pasaron las validaciones
+    const validatedData = matchedData(req, {
+      locations: ["body"],
+    });
 
+    // evita ejecutar una actualizacion sin datos para modificar
+    if (Object.keys(validatedData).length === 0) {
+      return res.status(400).json({
+        message: "Debes enviar al menos un campo para actualizar",
+      });
+    }
+
+    // busca el perfil que pertenece al usuario que inicio sesion
     const profile = await ProfileModel.findOne({
       where: {
         user_id: req.user.id,
       },
-    }); // busca el perfil que pertenece al usuario autenticado
+    });
 
+    // comprueba que el usuario tenga un perfil creado
     if (!profile) {
       return res.status(404).json({
         message: "Perfil no encontrado",
       });
     }
 
-    await profile.update(validatedData); // actualiza solamente los campos recibidos
+    // actualiza unicamente los campos validados que fueron enviados
+    await profile.update(validatedData);
 
+    // devuelve el perfil actualizado
     return res.status(200).json({
       message: "Perfil actualizado correctamente",
       profile,
     });
   } catch (error) {
+    // muestra el error en la terminal para poder revisarlo
     console.error(error);
 
     return res.status(500).json({
       message: "Error interno del servidor",
-      error: error.message,
     });
   }
 };
 
-// cierra la sesion eliminando la cookie que contiene el jwt
+// cierra la sesion del usuario eliminando la cookie que contiene el jwt
 export const logout = (req, res) => {
-  res.clearCookie("token"); // elimina la cookie del navegador
+  // elimina la cookie token que se creo durante el inicio de sesion
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+  });
 
+  // informa que la sesion se cerro correctamente
   return res.status(200).json({
     message: "Logout exitoso",
   });
